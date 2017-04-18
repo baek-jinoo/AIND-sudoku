@@ -51,10 +51,13 @@ def naked_twins(values):
                     continue
                 if value != values[box]:
                     continue
+                #twin is found
                 foundTwin = box
                 break
             if foundTwin is False:
                 continue
+
+            #eliminate values of twins in other boxes in the unit
             for box in unit:
                 if box == key or box == foundTwin:
                     continue
@@ -102,33 +105,31 @@ def eliminate(values):
     keys = set(values.keys())
     while len(keys) > 0:
         key = keys.pop()
-        element = values[key]
+        value = values[key]
         
-        if len(element) > 1:
+        if len(value) > 1:
             continue
         
-        combined_unit_nodes = set(peers[key])
-        
-        for other_unit in combined_unit_nodes:
-            other_unit_value = values[other_unit]
-            before_len = len(other_unit_value)
-            other_unit_value = other_unit_value.replace(element, "")
-            after_len = len(other_unit_value)
-            assign_value(values, other_unit, other_unit_value)
+        for peer_unit in peers[key]:
+            update_value = values[peer_unit].replace(value, "")
+            assign_value(values, peer_unit, update_value)
             
     return values
 
 def only_choice(values):
     for unit in unitlist:
-        digitToLocation = {}
-        for key_in_unit in unit:
-            for digit in values[key_in_unit]:
-                if digit in digitToLocation:
-                    digitToLocation[digit].append(key_in_unit)
+        # Create the dictionary of digits as key to values as boxes
+        digitToLocations = {}
+        for key in unit:
+            for digit in values[key]:
+                if digit in digitToLocations:
+                    digitToLocations[digit].append(key)
                 else:
-                    digitToLocation[digit] = [key_in_unit]
-        for digit in digitToLocation:
-            locations = digitToLocation[digit]
+                    digitToLocations[digit] = [key]
+        # If the there is only one box for a digit,
+        # we set that digit as the sole value for that box
+        for digit in digitToLocations:
+            locations = digitToLocations[digit]
             if len(locations) == 1:
                 assign_value(values, locations[0], digit)
     return values
@@ -139,12 +140,8 @@ def reduce_puzzle(values):
         # Check how many boxes have a determined value
         solved_values_before = len([box for box in values.keys() if len(values[box]) == 1])
 
-        # Your code here: Use the Eliminate Strategy
         values = eliminate(values)
-
-        # Your code here: Use the Only Choice Strategy
         values = only_choice(values)
-
         values = naked_twins(values)
 
         # Check how many boxes have a determined value, to compare
@@ -178,7 +175,6 @@ def search(values):
         new_values = search(new_potential)
         if new_values != False:
             return new_values
-        
     return False
 
 def solve(grid):
