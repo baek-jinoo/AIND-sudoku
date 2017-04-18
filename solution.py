@@ -4,7 +4,14 @@ rows = 'ABCDEFGHI'
 cols = '123456789'
 
 def cross(A, B):
-    "Cross product of elements in A and elements in B."
+    """Cross product of elements in A and elements in B.
+    Args:
+        A(string): Elements to cross with B
+        B(string): Elements to cross with A
+
+    Returns:
+        Array of the cross between the two input elements
+    """
     return [s+t for s in A for t in B]
 
 boxes = cross(rows, cols)
@@ -21,6 +28,13 @@ def assign_value(values, box, value):
     """
     Please use this function to update your values dictionary!
     Assigns a value to a given box. If it updates the board record it.
+    Args:
+        values(dict): a dictionary of the form {'box_name': '123456789', ...}
+        box(string): a key for the new value in the form {RowColumn}
+        value(string): a new value with digits
+
+    Returns:
+        the values dictionary with the updated value with the box key
     """
 
     # Don't waste memory appending actions that don't actually change any values
@@ -102,6 +116,13 @@ def display(values):
     return
 
 def eliminate(values):
+    """Eliminate values using the eliminate strategy.
+    Args:
+        values(dict): a dictionary of the form {'box_name': '123456789', ...}
+
+    Returns:
+        the values dictionary with the eliminate strategy eliminated from peers.
+    """
     keys = set(values.keys())
     while len(keys) > 0:
         key = keys.pop()
@@ -117,6 +138,13 @@ def eliminate(values):
     return values
 
 def only_choice(values):
+    """Eliminate values using the only_choice strategy.
+    Args:
+        values(dict): a dictionary of the form {'box_name': '123456789', ...}
+
+    Returns:
+        the values dictionary with the only_choice eliminated from peers.
+    """
     for unit in unitlist:
         # Create the dictionary of digits as key to values as boxes
         digitToLocations = {}
@@ -135,6 +163,18 @@ def only_choice(values):
     return values
 
 def reduce_puzzle(values):
+    """ Constraint propagation algorithm that utilizes the three strategies to
+    solve the Sudoku problem. The three strategies include elimination, only
+    choice, and naked twins.
+    Args:
+        values(dict): a dictionary of the form {'box_name': '123456789', ...}
+
+    Returns:
+        the values dictionary or False
+        False if there are validation error
+        Otherwise, the dictionary with the three strategies iterated until no
+        further progress is made through the three strategies.
+    """
     stalled = False
     while not stalled:
         # Check how many boxes have a determined value
@@ -154,6 +194,17 @@ def reduce_puzzle(values):
     return values
 
 def search(values):
+    """ Recursive function that alternates search and constraint propagtion
+    through elimination strategies
+    Args:
+        values(dict): a dictionary of the form {'box_name': '123456789', ...}
+
+    Returns:
+        the values dictionary or False
+        False if there are is no solution
+        Otherwise, the dictionary with the solution through search and
+        constraint propagation applied iteratively
+    """
     values = reduce_puzzle(values)
     if values == False:
         return False
