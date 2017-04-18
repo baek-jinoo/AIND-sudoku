@@ -40,12 +40,31 @@ def naked_twins(values):
     Returns:
         the values dictionary with the naked twins eliminated from peers.
     """
-    #bla = dict((key, value) for key, value in values.items() if len(value) == 2)
-    #print(bla)
-    return values
+    for key, value in values.items():
+        if len(value) != 2:
+            continue
 
-    # Find all instances of naked twins
-    # Eliminate the naked twins as possibilities for their peers
+        for unit in units[key]:
+            foundTwin = False
+            for box in unit:
+                if box == key:
+                    continue
+                if value != values[box]:
+                    continue
+                foundTwin = box
+                break
+            if foundTwin is False:
+                continue
+            for box in unit:
+                if box == key or box == foundTwin:
+                    continue
+                current_box_value = values[box]
+                if value[0] in current_box_value:
+                    assign_value(values, box, current_box_value.replace(value[0], ""))
+                if value[1] in current_box_value:
+                    assign_value(values, box, current_box_value.replace(value[1], ""))
+
+    return values
 
 def grid_values(grid):
     """
@@ -82,13 +101,13 @@ def display(values):
 def eliminate(values):
     keys = set(values.keys())
     while len(keys) > 0:
-        value = keys.pop()
-        element = values[value]
+        key = keys.pop()
+        element = values[key]
         
         if len(element) > 1:
             continue
         
-        combined_unit_nodes = set(peers[value])
+        combined_unit_nodes = set(peers[key])
         
         for other_unit in combined_unit_nodes:
             other_unit_value = values[other_unit]
@@ -100,8 +119,7 @@ def eliminate(values):
     return values
 
 def only_choice(values):
-    all_units = unitlist.copy()
-    for unit in all_units:
+    for unit in unitlist:
         digitToLocation = {}
         for value_in_unit in unit:
             for digit in values[value_in_unit]:
@@ -147,16 +165,16 @@ def search(values):
         return values
     # Choose one of the unfilled squares with the fewest possibilities
     least_num_possibilities = 10
-    least_value = ""
-    for value in values:
-        if len(values[value]) == 1:
+    least_key = ""
+    for key in values:
+        if len(values[key]) == 1:
             continue
-        if least_num_possibilities > len(values[value]):
-            least_num_possibilities = len(values[value])
-            least_value = value
-    for digit in values[least_value]:
+        if least_num_possibilities > len(values[key]):
+            least_num_possibilities = len(values[key])
+            least_key = key
+    for digit in values[least_key]:
         new_potential = values.copy()
-        assign_value(new_potential, least_value, digit)
+        assign_value(new_potential, least_key, digit)
         new_values = search(new_potential)
         if new_values != False:
             return new_values
