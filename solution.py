@@ -121,12 +121,12 @@ def eliminate(values):
 def only_choice(values):
     for unit in unitlist:
         digitToLocation = {}
-        for value_in_unit in unit:
-            for digit in values[value_in_unit]:
+        for key_in_unit in unit:
+            for digit in values[key_in_unit]:
                 if digit in digitToLocation:
-                    digitToLocation[digit].append(value_in_unit)
+                    digitToLocation[digit].append(key_in_unit)
                 else:
-                    digitToLocation[digit] = [value_in_unit]
+                    digitToLocation[digit] = [key_in_unit]
         for digit in digitToLocation:
             locations = digitToLocation[digit]
             if len(locations) == 1:
