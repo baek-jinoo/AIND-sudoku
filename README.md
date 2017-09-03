@@ -1,4 +1,21 @@
 # Artificial Intelligence Nanodegree
+
+## Jin Notes
+
+### Run
+
+Within a python3 environment, run `python solution.py`
+
+### Project Conclusion
+
+This introductory project by Udacity provided a step by step guide to solving Sudoku via constraint satisfaction and search.
+
+This project uses domain specific methods to apply the constraint satisfaction strategy. It was a good introduction into how problems with rules can be solved using constraint satisfaction and search.
+
+Lastly, it was great to see how we could try different values to solve problems that doesn't have a single option available. However, also good to learn about the algorithmic complexity implications of search.
+
+
+
 ## Introductory Project: Diagonal Sudoku Solver
 
 # Question 1 (Naked Twins)
